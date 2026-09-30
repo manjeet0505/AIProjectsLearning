@@ -1,7 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
-from app.db import engine
+
+from app.db import engine, Base
+from app import models
+
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="AI Project 1")
 
