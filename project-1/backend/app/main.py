@@ -1,9 +1,11 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy import text
+from sqlalchemy import text, Session
 
-from app.db import engine, Base
+from app.db import engine, Base, get_db
 from app import models
+from app.models import User
+from app.schemas import UserCreate
 
 Base.metadata.create_all(bind=engine)
 
@@ -27,3 +29,17 @@ def db_test():
     with engine.connect() as connection:
         result = connection.execute(text("SELECT 1"))
         return {"database": result.scalar()}
+
+
+@app.post("/users")
+def create_user(user: UserCreate, db: Session = Depends(get_db)):
+    new_user = User(
+        name=user.name,
+        email=user.email
+    )
+
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+
+    return new_user
