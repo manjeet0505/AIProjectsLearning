@@ -1,26 +1,9 @@
-from app.db import SessionLocal
-from app.services.embedding_service import create_embedding
-from app.services.vector_service import search_similar_chunks
+from app.services.rag_service import ask_question
 
 
-query = "What is RAG?"
+question = "What is RAG?"
 
-query_embedding = create_embedding(query)
+answer = ask_question(question)
 
-db = SessionLocal()
-
-try:
-    results = search_similar_chunks(
-        db=db,
-        query_embedding=query_embedding,
-        limit=3
-    )
-
-    for result in results:
-        print("\n--- RETRIEVED CHUNK ---")
-        print("ID:", result.id)
-        print("Document:", result.document_name)
-        print("Text:", result.chunk_text)
-
-finally:
-    db.close()
+print("\n--- ANSWER ---")
+print(answer)
