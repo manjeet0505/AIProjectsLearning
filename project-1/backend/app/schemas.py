@@ -5,3 +5,6 @@ class UserCreate(BaseModel):
     name: str
     email: str
     
+
+class AskRequest(BaseModel):
+    question: str
